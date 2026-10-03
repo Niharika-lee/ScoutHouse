@@ -1,22 +1,22 @@
 import { useState } from 'react';
-import { Compass, Heart, Home, ListFilter, Scale, Menu, X, LayoutDashboard } from 'lucide-react';
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/clerk-react';
-import type { UserRole } from '@/types';
+import { Compass, Heart, Home, ListFilter, Scale, Menu, X, LogIn, LogOut, LayoutDashboard } from 'lucide-react';
+import type { User } from '@/types';
 
-type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'sign-in' | 'sign-up' | 'onboarding' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
+type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'login' | 'signup' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
 
 interface NavbarProps {
   page: Page;
   onNavigate: (page: Page, params?: Record<string, string>) => void;
   shortlistCount: number;
   compareCount: number;
-  role: UserRole | null;
+  user: User | null;
+  onLogout: () => void;
 }
 
-export function Navbar({ page, onNavigate, shortlistCount, compareCount, role }: NavbarProps) {
+export function Navbar({ page, onNavigate, shortlistCount, compareCount, user, onLogout }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const isOwner = role === 'Owner';
+  const isOwner = user?.role === 'Owner';
 
   const baseLinks: { key: Page; label: string; icon: typeof Home; count?: number }[] = [
     { key: 'home', label: 'Home', icon: Home },
@@ -68,40 +68,45 @@ export function Navbar({ page, onNavigate, shortlistCount, compareCount, role }:
               )}
             </button>
           ))}
-          <SignedIn>
-            <button
-              onClick={() => handleNav(dashboardPage)}
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
-                page === dashboardPage ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <LayoutDashboard className="h-4 w-4" />
-              Dashboard
-            </button>
-            <div className="mx-1 h-6 w-px bg-slate-200" />
-            <div className="flex items-center gap-2">
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: 'h-8 w-8',
-                  },
-                }}
-              />
-            </div>
-          </SignedIn>
-          <SignedOut>
-            <div className="mx-1 h-6 w-px bg-slate-200" />
-            <SignInButton mode="modal">
-              <button className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100">
+          {user ? (
+            <>
+              <button
+                onClick={() => handleNav(dashboardPage)}
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
+                  page === dashboardPage ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Dashboard
+              </button>
+              <div className="mx-1 h-6 w-px bg-slate-200" />
+              <span className="text-sm font-medium text-slate-700">{user.name.split(' ')[0]}</span>
+              <button
+                onClick={() => { onLogout(); handleNav('home'); }}
+                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+                aria-label="Log out"
+              >
+                <LogOut className="h-4 w-4" />
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => handleNav('login')}
+                className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+              >
+                <LogIn className="h-4 w-4" />
                 Log in
               </button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <button className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-teal-500 px-4 py-2 text-sm font-semibold text-white transition hover:shadow-lg hover:shadow-blue-200">
+              <button
+                onClick={() => handleNav('signup')}
+                className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-teal-500 px-4 py-2 text-sm font-semibold text-white transition hover:shadow-lg hover:shadow-blue-200"
+              >
                 Sign up
               </button>
-            </SignUpButton>
-          </SignedOut>
+            </>
+          )}
         </nav>
 
         {/* Mobile hamburger */}
@@ -134,35 +139,45 @@ export function Navbar({ page, onNavigate, shortlistCount, compareCount, role }:
               )}
             </button>
           ))}
-          <SignedIn>
-            <button
-              onClick={() => handleNav(dashboardPage)}
-              className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-3 text-sm font-medium transition ${
-                page === dashboardPage ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <LayoutDashboard className="h-4 w-4" />
-              Dashboard
-            </button>
-            <div className="mt-3 flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
-              <span className="text-sm font-medium text-slate-700">Account</span>
-              <UserButton appearance={{ elements: { avatarBox: 'h-8 w-8' } }} />
-            </div>
-          </SignedIn>
-          <SignedOut>
+          {user ? (
+            <>
+              <button
+                onClick={() => handleNav(dashboardPage)}
+                className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-3 text-sm font-medium transition ${
+                  page === dashboardPage ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Dashboard
+              </button>
+              <div className="mt-2 flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
+                <span className="text-sm font-medium text-slate-700">{user.name}</span>
+                <button
+                  onClick={() => { onLogout(); handleNav('home'); }}
+                  className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-200"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Log out
+                </button>
+              </div>
+            </>
+          ) : (
             <div className="mt-2 flex gap-2">
-              <SignInButton mode="modal">
-                <button className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-3 text-sm font-medium text-slate-600">
-                  Log in
-                </button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="flex flex-1 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-teal-500 px-3 py-3 text-sm font-semibold text-white">
-                  Sign up
-                </button>
-              </SignUpButton>
+              <button
+                onClick={() => handleNav('login')}
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-200 px-3 py-3 text-sm font-medium text-slate-600"
+              >
+                <LogIn className="h-4 w-4" />
+                Log in
+              </button>
+              <button
+                onClick={() => handleNav('signup')}
+                className="flex flex-1 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-teal-500 px-3 py-3 text-sm font-semibold text-white"
+              >
+                Sign up
+              </button>
             </div>
-          </SignedOut>
+          )}
         </nav>
       )}
     </header>

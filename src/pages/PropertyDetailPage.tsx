@@ -21,7 +21,7 @@ import { useApp } from '@/context/AppContext';
 import { AvailabilityBadge, InfoPill } from '@/components/ui';
 import { RentalRealityCheck } from '@/components/RentalRealityCheck';
 
-type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'sign-in' | 'sign-up' | 'onboarding' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
+type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'login' | 'signup' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
 
 interface PropertyDetailPageProps {
   propertyId: string;
@@ -40,8 +40,8 @@ const amenityIcons: Record<string, typeof Wifi> = {
 };
 
 export function PropertyDetailPage({ propertyId, onNavigate }: PropertyDetailPageProps) {
-  const { role, toggleShortlist, isShortlisted, toggleCompare, isInCompare, getAllProperties } = useApp();
-  const isOwner = role === 'Owner';
+  const { user, toggleShortlist, isShortlisted, toggleCompare, isInCompare, getAllProperties } = useApp();
+  const isOwner = user?.role === 'Owner';
   const [activeImage, setActiveImage] = useState(0);
   const [showContact, setShowContact] = useState(false);
 

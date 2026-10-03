@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { useUser } from '@clerk/clerk-react';
 import { ArrowLeft, ImagePlus, X, AlertCircle, Check } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import {
@@ -8,7 +7,7 @@ import {
 } from '@/data/properties';
 import type { Property, PropertyType, FurnishedStatus, GenderPreference, Availability, HouseRules, AgreementTerms } from '@/types';
 
-type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'sign-in' | 'sign-up' | 'onboarding' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
+type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'login' | 'signup' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
 
 interface PropertyFormProps {
   onNavigate: (page: Page, params?: Record<string, string>) => void;
@@ -51,8 +50,7 @@ function safeStr(v: string): string { return v || ''; }
 function safeNum(v: string): number { const n = Number(v); return isNaN(n) ? 0 : n; }
 
 export function PropertyForm({ onNavigate, editId }: PropertyFormProps) {
-  const { user } = useUser();
-  const { ownerProperties, addOwnerProperty, updateOwnerProperty } = useApp();
+  const { user, ownerProperties, addOwnerProperty, updateOwnerProperty } = useApp();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const existing = editId ? ownerProperties.find((p) => p.id === editId) : null;
@@ -92,8 +90,7 @@ export function PropertyForm({ onNavigate, editId }: PropertyFormProps) {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    if (user === undefined) return;
-    if (!user) onNavigate('sign-in');
+    if (!user) onNavigate('login');
   }, [user, onNavigate]);
 
   if (!user) return null;
@@ -217,8 +214,7 @@ export function PropertyForm({ onNavigate, editId }: PropertyFormProps) {
       tenantReviews: existing?.tenantReviews ?? [],
       similarPropertyIds: existing?.similarPropertyIds ?? [],
       isOwnerPosted: true,
-      ownerEmail: user.primaryEmailAddress?.emailAddress ?? '',
-      ownerId: user.id,
+      ownerEmail: user.email,
     };
 
     if (existing) updateOwnerProperty(property);

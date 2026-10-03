@@ -3,7 +3,7 @@ import { furnitureChecklistItems } from '@/data/properties';
 import { useApp } from '@/context/AppContext';
 import type { Property } from '@/types';
 
-type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'sign-in' | 'sign-up' | 'onboarding' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
+type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'login' | 'signup' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
 
 interface ComparePageProps {
   onNavigate: (page: Page, params?: Record<string, string>) => void;

@@ -1,25 +1,24 @@
 import { useState } from 'react';
-import { useUser } from '@clerk/clerk-react';
 import { Plus, Edit2, Trash2, Home, AlertCircle, MapPin, ArrowRight } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import type { Property } from '@/types';
 
-type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'sign-in' | 'sign-up' | 'onboarding' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
+type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'login' | 'signup' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
 
 interface OwnerDashboardProps {
   onNavigate: (page: Page, params?: Record<string, string>) => void;
 }
 
 export function OwnerDashboard({ onNavigate }: OwnerDashboardProps) {
-  const { user } = useUser();
-  const { ownerProperties, deleteOwnerProperty, updateOwnerProperty } = useApp();
+  const { user, ownerProperties, deleteOwnerProperty, updateOwnerProperty } = useApp();
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   if (!user) {
+    onNavigate('login');
     return null;
   }
 
-  const myProps = ownerProperties.filter((p) => p.ownerId === user.id);
+  const myProps = ownerProperties.filter((p) => p.ownerEmail === user.email);
 
   const toggleAvailability = (p: Property) => {
     const updated: Property = {

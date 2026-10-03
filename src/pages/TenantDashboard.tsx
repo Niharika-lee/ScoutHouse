@@ -1,19 +1,18 @@
 import { Heart, Scale, Mail, User as UserIcon, ArrowRight, Search } from 'lucide-react';
-import { useUser } from '@clerk/clerk-react';
 import { useApp } from '@/context/AppContext';
 import { PropertyCard } from '@/components/PropertyCard';
 
-type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'sign-in' | 'sign-up' | 'onboarding' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
+type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'login' | 'signup' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
 
 interface TenantDashboardProps {
   onNavigate: (page: Page, params?: Record<string, string>) => void;
 }
 
 export function TenantDashboard({ onNavigate }: TenantDashboardProps) {
-  const { user } = useUser();
-  const { shortlist, compareList, getAllProperties } = useApp();
+  const { user, shortlist, compareList, getAllProperties } = useApp();
 
   if (!user) {
+    onNavigate('login');
     return null;
   }
 
@@ -30,10 +29,10 @@ export function TenantDashboard({ onNavigate }: TenantDashboardProps) {
             <UserIcon className="h-7 w-7" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">{user.fullName ?? user.firstName ?? 'Tenant'}</h1>
+            <h1 className="text-2xl font-bold">{user.name}</h1>
             <p className="flex items-center gap-1.5 text-sm text-blue-50">
               <Mail className="h-3.5 w-3.5" />
-              {user.primaryEmailAddress?.emailAddress ?? ''}
+              {user.email}
             </p>
           </div>
         </div>

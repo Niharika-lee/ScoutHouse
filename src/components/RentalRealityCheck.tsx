@@ -31,7 +31,7 @@ import { furnitureChecklistItems } from '@/data/properties';
 import { PropertyCard } from '@/components/PropertyCard';
 import { useApp } from '@/context/AppContext';
 
-type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'sign-in' | 'sign-up' | 'onboarding' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
+type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'login' | 'signup' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
 
 interface RentalRealityCheckProps {
   property: Property;

@@ -60,7 +60,6 @@ export interface Property {
   similarPropertyIds: string[];
   isOwnerPosted?: boolean;
   ownerEmail?: string;
-  ownerId?: string;
 }
 
 export type UserRole = 'Tenant' | 'Owner';
