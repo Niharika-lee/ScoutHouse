@@ -9,8 +9,8 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, onClick }: PropertyCardProps) {
-  const { user, toggleShortlist, isShortlisted, toggleCompare, isInCompare, compareLimitReached } = useApp();
-  const isOwner = user?.role === 'Owner';
+  const { role, toggleShortlist, isShortlisted, toggleCompare, isInCompare, compareLimitReached } = useApp();
+  const isOwner = role === 'Owner';
   const [showLimitMsg, setShowLimitMsg] = useState(false);
   const shortlisted = isShortlisted(property.id);
   const inCompare = isInCompare(property.id);

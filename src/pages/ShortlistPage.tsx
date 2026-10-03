@@ -2,7 +2,7 @@ import { Heart, Search, ArrowRight, StickyNote } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import { PropertyCard } from '@/components/PropertyCard';
 
-type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'login' | 'signup' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
+type Page = 'home' | 'listings' | 'detail' | 'shortlist' | 'compare' | 'sign-in' | 'sign-up' | 'onboarding' | 'tenant-dashboard' | 'owner-dashboard' | 'property-form';
 
 interface ShortlistPageProps {
   onNavigate: (page: Page, params?: Record<string, string>) => void;
